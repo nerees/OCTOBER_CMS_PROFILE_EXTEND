@@ -8,7 +8,7 @@ You have to add config.php file to you "pluginsfolder"/config/config.php
 <?php
 //plugino nerijus.profile configas
 return [
-    'key' => "YourKey"
+    'key' => "YourRivileAPIKey"
 ];
 ```
 ```
