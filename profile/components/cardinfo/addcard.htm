@@ -1,0 +1,10 @@
+{{ form_ajax('onAddCard') }}
+<!--Niekas is cia nepaimama pakopijuita i octoberio partials-->
+    <div class="form-group">
+        <label for="saskaita">Kortelės numeris</label>
+        <input name="saskaita" type="text" class="form-control" id="saskaita" value="{{ user.profile.saskaita }}">
+    </div>
+
+    <button type="submit" class="btn btn-default">Pridėti</button>
+
+{{ form_close() }}
