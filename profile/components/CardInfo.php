@@ -14,6 +14,7 @@ class CardInfo extends ComponentBase
      */
     public $id;
 	public $profile;
+	public $Remail; //emailas rivilėje bus naudojamas tikrinti su profiliu arba tikrinti ar ne tuščias
 
     /**
      * @array
@@ -26,6 +27,7 @@ class CardInfo extends ComponentBase
 	public $terminuota; //pagal mus aktyvi 0 neaktyvi 1 (rodom info ar nerodom veikia kasoje ar neveikia)
 	public $blokuota; // blokuota kortele ar neblokuota
 	public $now; //data soniniam pasiulymui dienos pagaldiena.htm particle
+	
 
     public function componentDetails()
     {
@@ -125,7 +127,6 @@ class CardInfo extends ComponentBase
 			$this->yra_info = $this->checkRequiredInfo($this->n64info);
 			$this->terminuota = trim($this->n64info->N64[0]->N64_POZ_DATE);
 			$this->blokuota = trim($this->n64info->N64[0]->N64_BLOK_POZ);
-			//$this->page['test'] = $this->n64info->N64[0]->N64_POZ_DATE;
 			$this->page['yra_info'] = $this->yra_info;
 			$this->page['gimimo'] = date('Y-m-d', strtotime($this->n64info->N64[0]->N64_GIM_DATA));
 			if ($this->page['gimimo'] < "1901-01-01"){
@@ -134,7 +135,7 @@ class CardInfo extends ComponentBase
 				$this->page['liko_iki_gimtadienio'] = $this->countdays(strval($this->page['gimimo'])); //skaiciuojam laika iki gimtadienio
 			}
 			$this->page['adresas'] = strlen(trim($this->n64info->N64[0]->N64_KODAS_VS)); //tik patikrinimui ar netuscias
-			$this->page['email'] = strlen(trim($this->n64info->N64[0]->N64_E_MAIL)); //tik patikrinimui ar netuscias
+			$this->Remail = trim($this->n64info->N64[0]->N64_E_MAIL); //patikrinimui 
 			$this->page['mob'] = strlen(trim($this->n64info->N64[0]->N64_MOB_TEL)); //tik patikrinimui ar netuscias
 			$this->page['lytis'] = (int)trim($this->n64info->N64[0]->N64_LYTIS);
 			$this->page['vardas'] = trim($this->n64info->N64[0]->N64_VARDAS);
@@ -432,7 +433,7 @@ class CardInfo extends ComponentBase
 	}
 	
 	
-	// tikrinam ar visi reikalingi profilio laukai užpildyti (true / false)
+	// tikrinam ar visi reikalingi profilio laukai užpildyti (true / false) 
 	public function checkRequiredInfo($kortele)
 	{
 		
@@ -444,9 +445,9 @@ class CardInfo extends ComponentBase
 			if (empty(trim($kortele->N64[0]->N64_KODAS_VS))){
 				return false;
 			}
-			if (empty(trim($kortele->N64[0]->N64_E_MAIL))){
-				return false; //cia gal reiktu pristirti accounto emaila automatiskai jei tuscias
-			}
+			//if (empty(trim($kortele->N64[0]->N64_E_MAIL))){
+			//	return false; //cia gal reiktu pristirti accounto emaila automatiskai jei tuscias
+			//}
 			if (empty(trim($kortele->N64[0]->N64_MOB_TEL))){
 				return false;
 			}
@@ -624,6 +625,7 @@ class CardInfo extends ComponentBase
             /*
              * form input
              */
+			$user = Auth::getUser();
 			$id = $this->generateID(); 
 			$data = post();
 			//Log::info('koks id: '.$id);
@@ -651,7 +653,12 @@ class CardInfo extends ComponentBase
 			}else{
 				$uzklausa .="<N64_KODAS_LS_3>0</N64_KODAS_LS_3>\r\n             "; 
 			}
-			
+
+			//jei tuščias emailas tai imam vartotojo accountą (kažin ar nereikėtų čia pet kokiu atveju dėti registracijos acc?? anketoje gali būti netikras nepatvirtintas)
+			if ( (strlen($data['remail']) < 4) || (strstr($data['remail'], '@') == false) ){
+				$uzklausa .="<N64_E_MAIL>".$user->email."</N64_E_MAIL>\r\n             ";
+			}
+
 			$uzklausa .= "<N64_LYTIS>".$data['lytis']."</N64_LYTIS>\r\n             <N64_ASM_KODAS>".$data['nariai']."</N64_ASM_KODAS>\r\n             <N64_MOB_TEL>".$data['tel']."</N64_MOB_TEL>\r\n             <N64_ADR2>".$data['adresas1']."</N64_ADR2>\r\n             <N64_ADR3>".$data['adresas2']."</N64_ADR3>\r\n             </N64>\r\n    </data>\r\n</body>";
 			
 			//Log::info('uzklausa: '.$uzklausa);

@@ -128,7 +128,11 @@ class CardInfo extends ComponentBase
 			//$this->page['test'] = $this->n64info->N64[0]->N64_POZ_DATE;
 			$this->page['yra_info'] = $this->yra_info;
 			$this->page['gimimo'] = date('Y-m-d', strtotime($this->n64info->N64[0]->N64_GIM_DATA));
-			$this->page['liko_iki_gimtadienio'] = $this->countdays(strval($this->page['gimimo'])); //skaiciuojam laika iki gimtadienio
+			if ($this->page['gimimo'] < "1901-01-01"){
+				$this->page['liko_iki_gimtadienio'] = "";
+			}else{
+				$this->page['liko_iki_gimtadienio'] = $this->countdays(strval($this->page['gimimo'])); //skaiciuojam laika iki gimtadienio
+			}
 			$this->page['adresas'] = strlen(trim($this->n64info->N64[0]->N64_KODAS_VS)); //tik patikrinimui ar netuscias
 			$this->page['email'] = strlen(trim($this->n64info->N64[0]->N64_E_MAIL)); //tik patikrinimui ar netuscias
 			$this->page['mob'] = strlen(trim($this->n64info->N64[0]->N64_MOB_TEL)); //tik patikrinimui ar netuscias
