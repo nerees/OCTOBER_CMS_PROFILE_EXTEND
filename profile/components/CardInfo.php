@@ -655,7 +655,7 @@ class CardInfo extends ComponentBase
 			}
 
 			//jei tuščias emailas tai imam vartotojo accountą (kažin ar nereikėtų čia pet kokiu atveju dėti registracijos acc?? anketoje gali būti netikras nepatvirtintas)
-			if ( (strlen($data['remail']) < 4) || (strstr($data['remail'], '@') == false) ){
+			if ( (strlen($data['remail']) < 5) || (strstr($data['remail'], '@') == false) || (strstr($data['remail'], '.') == false) ){
 				$uzklausa .="<N64_E_MAIL>".$user->email."</N64_E_MAIL>\r\n             ";
 			}
 
